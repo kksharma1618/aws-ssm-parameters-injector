@@ -1,0 +1,40 @@
+{
+  "name": "aws-ssm-parameters-injector",
+  "version": "1.0.0",
+  "description": "A utility module to load and inject ssm parameters into json configuration objects",
+  "main": "build/index",
+  "types": "build/index",
+  "engines": {
+    "node": ">=4.3.2"
+  },
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "lint": "tslint src/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kksharma1618/aws-ssm-parameters-injector.git"
+  },
+  "keywords": [
+    "aws ssm",
+    "ssm",
+    "ssm parameters"
+  ],
+  "author": "Krishna Kant Sharma <kks@krishnakantsharma.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kksharma1618/aws-ssm-parameters-injector/issues"
+  },
+  "homepage": "https://github.com/kksharma1618/aws-ssm-parameters-injector#readme",
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/node": "^8.0.16",
+    "@types/object-path": "^0.9.29",
+    "ts-node": "^3.0.4",
+    "typescript": "^2.3.2"
+  },
+  "dependencies": {
+    "object-path": "^0.11.4"
+  }
+}
