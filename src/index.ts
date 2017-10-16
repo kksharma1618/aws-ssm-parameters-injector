@@ -1,9 +1,8 @@
 import * as objectPath from 'object-path'
-import {SSM} from 'aws-sdk'
 // load config from provided file path (require(path) should return json)
 // parses it for ssm keys and loads and injects those keys from ssm parameters
 export interface IOptions {
-    ssm: SSM, // doesnt load ssm module, just using the type
+    ssm, // doesnt load ssm module, just using the type
     strict?: boolean // in strict mode any missing ssm param will throw error
 }
 export async function loadConfig<T>(configFilePath: string, options: IOptions) {

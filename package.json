@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/kksharma1618/aws-ssm-parameters-injector#readme",
   "devDependencies": {
-    "@types/aws-sdk": "^2.7.0",
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.43",
     "@types/node": "^8.0.16",
