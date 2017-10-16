@@ -7,10 +7,12 @@ export interface IOptions {
     strict: boolean // in strict mode any missing ssm param will throw error
 }
 export async function loadConfig(configFilePath: string, options: IOptions) {
-    return loadSsmParamsIntoConfig(require(configFilePath), options)
+    const config = require(configFilePath)
+    return loadSsmParamsIntoConfig(Object.assign({}, config), options)
 }
 export async function loadSsmParamsIntoConfig(config, options: IOptions) {
     const mapper = parseObjectForSsmFields(config)
+    console.log('mapper', mapper)
     return loadMappedSsmParamsIntoConfig(config, mapper, options)
 }
 export interface IParamMap {
@@ -24,6 +26,8 @@ export async function loadMappedSsmParamsIntoConfig(config, paramMap: IParamMap[
         Names: names,
         WithDecryption: true
     }).promise()
+
+    // console.log('data', data, names)
 
     if (!data || !Array.isArray(data.Parameters)) {
         throw new Error('cant_load_ssm_params')
@@ -44,6 +48,13 @@ export async function loadMappedSsmParamsIntoConfig(config, paramMap: IParamMap[
             }
             return
         }
+        if (typeof values[m.key] === 'string') {
+            if (values[m.key].charAt(0) === '{') {
+                try {
+                    values[m.key] = JSON.parse(values[m.key])
+                } catch (e) {}
+            }
+        }
         objectPath.set(config, m.to, values[m.key])
     })
     return config
@@ -62,7 +73,7 @@ function parseObjectForSsmFields(obj, path = '') {
             if (obj[key].indexOf('ssm:') === 0) {
                 parsed.push({
                     key: obj[key].substr(4),
-                    to: `${path}.${key}`
+                    to: path ? `${path}.${key}` : key
                 })
             }
         }
