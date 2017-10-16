@@ -4,7 +4,7 @@ import {SSM} from 'aws-sdk'
 // parses it for ssm keys and loads and injects those keys from ssm parameters
 export interface IOptions {
     ssm: SSM, // doesnt load ssm module, just using the type
-    strict: boolean // in strict mode any missing ssm param will throw error
+    strict?: boolean // in strict mode any missing ssm param will throw error
 }
 export async function loadConfig<T>(configFilePath: string, options: IOptions) {
     const config: T = require(configFilePath)
