@@ -12,7 +12,6 @@ export async function loadConfig(configFilePath: string, options: IOptions) {
 }
 export async function loadSsmParamsIntoConfig(config, options: IOptions) {
     const mapper = parseObjectForSsmFields(config)
-    console.log('mapper', mapper)
     return loadMappedSsmParamsIntoConfig(config, mapper, options)
 }
 export interface IParamMap {
@@ -26,8 +25,6 @@ export async function loadMappedSsmParamsIntoConfig(config, paramMap: IParamMap[
         Names: names,
         WithDecryption: true
     }).promise()
-
-    // console.log('data', data, names)
 
     if (!data || !Array.isArray(data.Parameters)) {
         throw new Error('cant_load_ssm_params')
