@@ -14,7 +14,7 @@ describe('model', () => {
     })
     function testConfig(c) {
         expect(c).to.be.an('object')
-        expect(c).to.have.property('b', 'bv')
+        expect(c).to.have.property('b', '{bv')
         expect(c).to.have.property('c').which.is.an('object')
         // auto parse json
         expect(c.c).to.have.property('c1').which.is.an('object')
@@ -47,7 +47,7 @@ describe('model', () => {
                 ssm
             } as any)
             expect(c).to.be.an('object')
-            expect(c).to.have.property('b', 'bv')
+            expect(c).to.have.property('b', '{bv')
             expect(c).to.have.property('c').which.is.an('object')
             // this wasnt mapped
             expect(c.c).to.have.property('c1', 'ssm:/path/c1')
