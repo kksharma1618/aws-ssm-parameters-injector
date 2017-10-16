@@ -1,5 +1,7 @@
 # aws-ssm-parameters-injector
 
+[![Build Status](https://travis-ci.org/kksharma1618/aws-ssm-parameters-injector.svg?branch=master)](https://travis-ci.org/kksharma1618/aws-ssm-parameters-injector)
+
 A utility module to load and inject ssm parameters into json configuration objects
 
 ## Installation
