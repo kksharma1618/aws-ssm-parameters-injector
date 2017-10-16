@@ -6,19 +6,19 @@ export interface IOptions {
     ssm: SSM, // doesnt load ssm module, just using the type
     strict: boolean // in strict mode any missing ssm param will throw error
 }
-export async function loadConfig(configFilePath: string, options: IOptions) {
-    const config = require(configFilePath)
-    return loadSsmParamsIntoConfig(Object.assign({}, config), options)
+export async function loadConfig<T>(configFilePath: string, options: IOptions) {
+    const config: T = require(configFilePath)
+    return loadSsmParamsIntoConfig<T>(Object.assign({}, config), options)
 }
-export async function loadSsmParamsIntoConfig(config, options: IOptions) {
+export async function loadSsmParamsIntoConfig<T>(config: T, options: IOptions) {
     const mapper = parseObjectForSsmFields(config)
-    return loadMappedSsmParamsIntoConfig(config, mapper, options)
+    return loadMappedSsmParamsIntoConfig<T>(config, mapper, options)
 }
 export interface IParamMap {
     key: string,
     to: string
 }
-export async function loadMappedSsmParamsIntoConfig(config, paramMap: IParamMap[], options: IOptions) {
+export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IParamMap[], options: IOptions) {
     const ssm = options.ssm
     const names = paramMap.map((m) => m.key)
     const data = await ssm.getParameters({
