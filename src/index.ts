@@ -45,11 +45,9 @@ export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IPar
             return
         }
         if (typeof values[m.key] === 'string') {
-            if (values[m.key].charAt(0) === '{') {
-                try {
-                    values[m.key] = JSON.parse(values[m.key])
-                } catch (e) {}
-            }
+            try {
+                values[m.key] = JSON.parse(values[m.key])
+            } catch (e) {}
         }
         objectPath.set(config, m.to, values[m.key])
     })
