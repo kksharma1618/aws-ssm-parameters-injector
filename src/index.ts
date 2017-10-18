@@ -2,7 +2,7 @@ import * as objectPath from 'object-path'
 // load config from provided file path (require(path) should return json)
 // parses it for ssm keys and loads and injects those keys from ssm parameters
 export interface IOptions {
-    ssm, // doesnt load ssm module, just using the type
+    ssm,
     strict?: boolean // in strict mode any missing ssm param will throw error
 }
 export async function loadConfig<T>(configFilePath: string, options: IOptions) {
@@ -20,10 +20,7 @@ export interface IParamMap {
 export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IParamMap[], options: IOptions) {
     const ssm = options.ssm
     const names = paramMap.map((m) => m.key)
-    const data = await ssm.getParameters({
-        Names: names,
-        WithDecryption: true
-    }).promise()
+    const data = await getSsmParamters(ssm, names)
 
     if (!data || !Array.isArray(data.Parameters)) {
         throw new Error('cant_load_ssm_params')
@@ -47,7 +44,7 @@ export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IPar
         if (typeof values[m.key] === 'string') {
             try {
                 values[m.key] = JSON.parse(values[m.key])
-            } catch (e) {}
+            } catch (e) { }
         }
         objectPath.set(config, m.to, values[m.key])
     })
@@ -73,4 +70,47 @@ function parseObjectForSsmFields(obj, path = '') {
         }
     })
     return parsed
+}
+export interface ISSMResponse {
+    Parameters: Array<{
+        Name: string,
+        Type: 'String' | 'StringList' | 'SecureString',
+        Value: string
+    }>,
+    InvalidParameters: string[]
+}
+async function getSsmParamters(ssm, names: string[], batchSize = 10, parallel = 5) {
+    const batches = splitIntoChunks(names, batchSize)
+    const parallelBatches = splitIntoChunks(batches, parallel)
+    const data: ISSMResponse = {
+        Parameters: [],
+        InvalidParameters: []
+    }
+    for (const parallelBatch of parallelBatches) {
+        const results: ISSMResponse[] = await Promise.all(parallelBatch.map((batch) => {
+            return ssm.getParameters({
+                Names: names,
+                WithDecryption: true
+            }).promise()
+        }))
+        results.forEach((result) => {
+            if (!result || !Array.isArray(result.Parameters)) {
+                throw new Error('cant_load_ssm_params')
+            }
+            data.Parameters = data.Parameters.concat(result.Parameters)
+            data.InvalidParameters = data.InvalidParameters.concat(result.InvalidParameters || [])
+        })
+    }
+    return data
+}
+function splitIntoChunks<T>(array: T[], len) {
+    if (len < 1) {
+        len = 1
+    }
+    const chunks: T[][] = []
+    let i = 0
+    while (i < array.length) {
+        chunks.push(array.slice(i, i += len));
+    }
+    return chunks
 }
