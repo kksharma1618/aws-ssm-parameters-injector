@@ -89,7 +89,7 @@ async function getSsmParamters(ssm, names: string[], batchSize = 10, parallel = 
     for (const parallelBatch of parallelBatches) {
         const results: ISSMResponse[] = await Promise.all(parallelBatch.map((batch) => {
             return ssm.getParameters({
-                Names: names,
+                Names: batch,
                 WithDecryption: true
             }).promise()
         }))
