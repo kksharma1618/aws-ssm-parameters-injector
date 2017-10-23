@@ -11,6 +11,8 @@
     "tpl": {
         "ta": "{ssm:/path/tpl/t}a",
         "tb": "a{ssm:/path/tpl/t}b",
-        "tc": "a{ssm:/path/tpl/t}b{ssm:/path/tpl/t2}c"
+        "tc": "a{ssm:/path/tpl/t}b{ssm:/path/tpl/t2}c",
+        "td": "a{ssm:/path/c1 c1v}b",
+        "te": "a{ssm:/path/d d.v}b"
     }
 }

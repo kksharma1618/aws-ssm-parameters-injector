@@ -28,6 +28,8 @@ describe('model', () => {
         expect(c.tpl).to.have.property('ta', 'tva')
         expect(c.tpl).to.have.property('tb', 'atvb')
         expect(c.tpl).to.have.property('tc', 'atvbt2vc')
+        expect(c.tpl).to.have.property('td', 'a23b')
+        expect(c.tpl).to.have.property('te', 'a2b')
     }
     describe('model.loadConfig', () => {
         it('should work', async () => {

@@ -3,5 +3,6 @@
     "ssm:/path/tpl/t2": "t2v",
     "ssm:/path/b": "{bv",
     "ssm:/path/c1": "{\"c1v\": 23}",
-    "ssm:/path/c21": "c21v"
+    "ssm:/path/c21": "c21v",
+    "ssm:/path/d": "{\"d\":{\"v\":2}}"
 }

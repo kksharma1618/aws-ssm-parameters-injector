@@ -11,12 +11,14 @@ export async function loadConfig<T>(configFilePath: string, options: IOptions) {
 }
 export async function loadSsmParamsIntoConfig<T>(config: T, options: IOptions) {
     const mapper = parseObjectForSsmFields(config)
+    console.log('mapper', mapper)
     return loadMappedSsmParamsIntoConfig<T>(config, mapper, options)
 }
 export interface IParamMap {
     key: string,
     to: string,
-    tpl?: boolean
+    tpl?: string,
+    toSubPath?: string
 }
 export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IParamMap[], options: IOptions) {
     const ssm = options.ssm
@@ -55,7 +57,11 @@ export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IPar
         let value = values[m.key]
         if (m.tpl) {
             value = objectPath.get(config, m.to)
-            value = value.replace(`{ssm:${m.key}}`, values[m.key])
+            if (m.toSubPath) {
+                value = value.replace(m.tpl, objectPath.get(values[m.key], m.toSubPath))
+            } else {
+                value = value.replace(m.tpl, values[m.key])
+            }
         }
         objectPath.set(config, m.to, value)
     })
@@ -81,10 +87,12 @@ function parseObjectForSsmFields(obj, path = '') {
                 const matches = obj[key].match(/{ssm:[^}]+}/g)
                 if (Array.isArray(matches)) {
                     matches.forEach((match) => {
+                        const k = match.substring(5, match.length - 1).split(' ')
                         parsed.push({
-                            key: match.substring(5, match.length - 1),
+                            key: k[0],
                             to: path ? `${path}.${key}` : key,
-                            tpl: true
+                            tpl: match,
+                            toSubPath: k.length === 2 ? k[1] : ''
                         })
                     })
                 }
