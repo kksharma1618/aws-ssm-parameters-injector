@@ -15,7 +15,8 @@ export async function loadSsmParamsIntoConfig<T>(config: T, options: IOptions) {
 }
 export interface IParamMap {
     key: string,
-    to: string
+    to: string,
+    tpl?: boolean
 }
 export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IParamMap[], options: IOptions) {
     const ssm = options.ssm
@@ -46,7 +47,12 @@ export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IPar
                 values[m.key] = JSON.parse(values[m.key])
             } catch (e) { }
         }
-        objectPath.set(config, m.to, values[m.key])
+        let value = values[m.key]
+        if (m.tpl) {
+            value = objectPath.get(config, m.to)
+            value = value.replace(`{ssm:${m.key}}`, values[m.key])
+        }
+        objectPath.set(config, m.to, value)
     })
     return config
 }
@@ -63,9 +69,20 @@ function parseObjectForSsmFields(obj, path = '') {
             // only string values can have ssm field
             if (obj[key].indexOf('ssm:') === 0) {
                 parsed.push({
-                    key: obj[key].substr(4),
+                    key: obj[key].substring(4),
                     to: path ? `${path}.${key}` : key
                 })
+            } else {
+                const matches = obj[key].match(/{ssm:[^}]+}/g)
+                if (Array.isArray(matches)) {
+                    matches.forEach((match) => {
+                        parsed.push({
+                            key: match.substring(5, match.length - 1),
+                            to: path ? `${path}.${key}` : key,
+                            tpl: true
+                        })
+                    })
+                }
             }
         }
     })

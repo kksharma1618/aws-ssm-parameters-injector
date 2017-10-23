@@ -22,6 +22,12 @@ describe('model', () => {
         expect(c.c).to.have.property('c2').which.is.an('object')
         expect(c.c.c2).to.have.property('c21', 'c21v')
         expect(c.c.c2).to.have.property('c22', 2)
+
+        // tpl
+        expect(c).to.have.property('tpl').which.is.an('object')
+        expect(c.tpl).to.have.property('ta', 'tva')
+        expect(c.tpl).to.have.property('tb', 'atvb')
+        expect(c.tpl).to.have.property('tc', 'atvbt2vc')
     }
     describe('model.loadConfig', () => {
         it('should work', async () => {

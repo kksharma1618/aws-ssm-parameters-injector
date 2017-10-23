@@ -7,5 +7,10 @@
             "c21": "ssm:/path/c21",
             "c22": 2
         }
+    },
+    "tpl": {
+        "ta": "{ssm:/path/tpl/t}a",
+        "tb": "a{ssm:/path/tpl/t}b",
+        "tc": "a{ssm:/path/tpl/t}b{ssm:/path/tpl/t2}c"
     }
 }
