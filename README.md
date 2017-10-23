@@ -37,13 +37,19 @@ injector.loadSsmParamsIntoConfig(configObject, options).then((r) => {
 ## Config
 Any json object. If you want to load a string from ssm then use 'ssm:/path/to/ssm/param' as its value
 
+### String template
+"prefix{ssm:/path/to/ssm/param}suffix" - see "d" in the example below
+
+### Object template
+"prefix{ssm:/path/to/ssm/param paramObjectPath}suffix" - see "e" in the example below
+
 ## Example
-Assuming you have 3 values in your ssm paramters.
+Assuming you have 5 values in your ssm paramters.
 
 ```
 /app/token = 'sometoken'
 /app/some/url = 'https://someurl.com'
-/app/some/json = '{"a": 23}'
+/app/some/json = '{"d":{"v":2}}'
 ```
 
 And, your config object is
@@ -54,7 +60,9 @@ And, your config object is
         "myToken": "ssm:/app/token",
         "someObject": "ssm:/app/some/json"
     },
-    "c": "normalData"
+    "c": "normalData",
+    "d": "pr{ssm:/app/token}su",
+    "e": "pr{ssm:/app/some/json d.v}su"
 }
 ```
 
@@ -69,9 +77,11 @@ injector.loadSsmParamsIntoConfig(configObject, options).then((r) => {
         "myAppUrl": "https://someurl.com",
         "b": {
             "myToken": "sometoken",
-            "someObject": {"a": 23}
+            "someObject": {"d": {"v": 2}}
         },
-        "c": "normalData"
+        "c": "normalData",
+        "d": "prsometokensu",
+        "e": "pr2su"
     }
     */
 }, (e) => {
