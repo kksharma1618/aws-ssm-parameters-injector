@@ -11,7 +11,6 @@ export async function loadConfig<T>(configFilePath: string, options: IOptions) {
 }
 export async function loadSsmParamsIntoConfig<T>(config: T, options: IOptions) {
     const mapper = parseObjectForSsmFields(config)
-    console.log('mapper', mapper)
     return loadMappedSsmParamsIntoConfig<T>(config, mapper, options)
 }
 export interface IParamMap {
