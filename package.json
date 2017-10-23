@@ -1,6 +1,6 @@
 {
   "name": "aws-ssm-parameters-injector",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A utility module to load and inject ssm parameters into json configuration objects",
   "main": "build/src/index",
   "types": "build/src/index",
