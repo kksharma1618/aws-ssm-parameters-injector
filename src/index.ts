@@ -20,7 +20,12 @@ export interface IParamMap {
 }
 export async function loadMappedSsmParamsIntoConfig<T>(config: T, paramMap: IParamMap[], options: IOptions) {
     const ssm = options.ssm
-    const names = paramMap.map((m) => m.key)
+    const names: string[] = []
+    paramMap.forEach((m) => {
+        if (names.indexOf(m.key) === -1) {
+            names.push(m.key)
+        }
+    })
     const data = await getSsmParamters(ssm, names)
 
     if (!data || !Array.isArray(data.Parameters)) {
